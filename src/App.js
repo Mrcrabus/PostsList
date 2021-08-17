@@ -6,16 +6,27 @@ import PostFilter from "./Components/PostFilter";
 import MyModal from "./Components/UI/MyModal/MyModal";
 import MyButton from "./Components/UI/button/MyButton";
 import {usePosts} from "./Components/hooks/usePosts";
-import axios from "axios";
+import PostsService from "./api/PostsService";
+import Loader from "./Components/UI/Loader/Loader";
+import {useFetching} from "./Components/hooks/useFetching";
 
 const App = () => {
-    let [posts, setPosts] = useState([])
+    let [posts, setPosts] = useState([
+        // {id: 1, title: 'ccc', body: 'Description'},
+        // {id: 2, title: 'rfr', body: 'Description'},
+        // {id: 3, title: 'aaa', body: 'Description'}
+    ])
 
     let [filter, setFilter] = useState({sort: '', query: ''})
     let [modal, setModal] = useState(false)
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
+    let [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
+        const posts = await PostsService.getAll();
+        setPosts(posts)
+    })
 
-    useEffect(()=> {
+
+    useEffect(() => {
         fetchPosts()
     }, [])
 
@@ -25,10 +36,6 @@ const App = () => {
         setModal(false)
     }
 
-    const fetchPosts = async () => {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
-        setPosts(response.data)
-    }
 
     const removePost = (post) => {
         setPosts(posts.filter(el => el.id !== post.id))
@@ -48,7 +55,16 @@ const App = () => {
             <hr style={{margin: '15px 0'}}/>
             <PostFilter filter={filter} setFilter={setFilter}/>
 
-            <PostsList remove={removePost} posts={sortedAndSearchedPosts} title='Posts list 1'/>
+            {postError &&
+                <h1>Error is ${postError}</h1>
+            }
+
+            {isPostsLoading
+                ? <div style={{display: 'flex', justifyContent: 'center', margin: '50px 0'}}><Loader/></div>
+                :
+                <PostsList remove={removePost} posts={sortedAndSearchedPosts} title='Posts list 1'/>
+
+            }
 
 
         </div>
