@@ -9,6 +9,8 @@ import {usePosts} from "./Components/hooks/usePosts";
 import PostsService from "./api/PostsService";
 import Loader from "./Components/UI/Loader/Loader";
 import {useFetching} from "./Components/hooks/useFetching";
+import {getPageCount, getPagesArray} from "./utils/pages";
+import Pagination from "./Components/UI/pagination/Pagination";
 
 const App = () => {
     let [posts, setPosts] = useState([
@@ -20,14 +22,21 @@ const App = () => {
     let [filter, setFilter] = useState({sort: '', query: ''})
     let [modal, setModal] = useState(false)
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query)
-    let [fetchPosts, isPostsLoading, postError] = useFetching(async () => {
-        const posts = await PostsService.getAll();
-        setPosts(posts)
+    let [totalPages, setTotalPages] = useState(0)
+    let [limit, setLimit] = useState(10)
+    let [page, setPage] = useState(1)
+
+
+    let [fetchPosts, isPostsLoading, postError] = useFetching(async (limit, page) => {
+        const response = await PostsService.getAll(limit, page);
+        setPosts(response.data)
+        const totalCount = response.headers['x-total-count']
+        setTotalPages(getPageCount(totalCount, limit))
     })
 
 
     useEffect(() => {
-        fetchPosts()
+        fetchPosts(limit, page)
     }, [])
 
 
@@ -39,6 +48,12 @@ const App = () => {
 
     const removePost = (post) => {
         setPosts(posts.filter(el => el.id !== post.id))
+    }
+
+    const changePage = (page) => {
+        setPage(page)
+        fetchPosts(limit, page)
+
     }
 
 
@@ -56,7 +71,7 @@ const App = () => {
             <PostFilter filter={filter} setFilter={setFilter}/>
 
             {postError &&
-                <h1>Error is ${postError}</h1>
+            <h1>Error is ${postError}</h1>
             }
 
             {isPostsLoading
@@ -65,6 +80,11 @@ const App = () => {
                 <PostsList remove={removePost} posts={sortedAndSearchedPosts} title='Posts list 1'/>
 
             }
+            <Pagination
+                page={page}
+                totalPages={totalPages}
+                changePage={changePage}
+            />
 
 
         </div>
