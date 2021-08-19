@@ -12,11 +12,11 @@ const PostFilter = ({filter, setFilter}) => {
             />
             <MySelect
                 value={filter.sort}
-                onChange={selectedPost => setFilter({...filter, soft: selectedPost})}
-                defaultValue={'sort by'}
+                onChange={selectedSort => setFilter({...filter, sort: selectedSort})}
+                defaultValue="Sort"
                 options={[
-                    {value: 'title', name: 'Name'},
-                    {value: 'body', name: 'Descriptions'}
+                    {value: 'title', name: 'by name'},
+                    {value: 'body', name: 'by description'},
                 ]}
             />
         </div>
