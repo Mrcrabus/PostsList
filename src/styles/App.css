@@ -77,3 +77,13 @@
 .navbar__links {
     margin-left: auto;
 }
+
+.navbar__item {
+    text-decoration: none;
+    margin: 0 2px;
+    color: black;
+    border: 2px groove teal;
+    background: white;
+    font-size: 20px;
+    border-radius: 5px;
+}

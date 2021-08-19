@@ -13,12 +13,20 @@ const Navbar = () => {
 
     return (
         <div className='navbar'>
-            <MyButton onClick={logout}>
-                Log out
-            </MyButton>
+            {isAuth
+                ? <MyButton onClick={logout}>
+                    Log out
+                </MyButton>
+                : <MyButton style={{display: 'none'}} onClick={logout}>
+                    Log out
+                </MyButton>
+
+
+            }
+
             <div className="navbar__links">
-                <Link style={{textDecoration: 'none'}} to="/about">About</Link>
-                <Link style={{textDecoration: 'none'}} to="/posts">Posts</Link>
+                <Link className='navbar__item' to="/about">About</Link>
+                <Link className='navbar__item' to="/posts">Posts</Link>
             </div>
         </div>
     );
