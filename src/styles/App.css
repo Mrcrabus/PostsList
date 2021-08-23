@@ -1,15 +1,15 @@
 * {
     margin: 0;
     padding: 0;
-
 }
+
 
 #root {
     display: flex;
     flex-direction: column;
-
     align-items: center;
 }
+
 
 .App {
     width: 800px;
@@ -23,6 +23,12 @@
     margin-top: 15px;
     justify-content: space-between;
 }
+
+.post__content ::selection {
+    background-color: lightgray;
+    color: teal;
+}
+
 
 .post__btns {
     display: flex;
